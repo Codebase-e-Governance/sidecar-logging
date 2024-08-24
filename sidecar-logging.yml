@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sidecar-logging-app
+  namespace: esoff
+  labels:
+    app: sidecar-logging-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sidecar-logging-app
+  template:
+    metadata:
+      labels:
+        app: sidecar-logging-app
+    spec:
+      containers:
+      - name: sidecar-logging-app
+        image: ${DOCKER_REPO}/sidecar-logging:${DOCKER_TAG}
+        resources:
+         requests:
+          memory: 250Mi
+         limits:
+          memory: 500Mi  
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8078
+            name: http
+        volumeMounts:
+        - name: off-storage
+          mountPath: /app  
+      - name: fluentd-agent
+        image: quay.io/fluentd_elasticsearch/fluentd:v3.1.0
+        env:
+        - name: FLUENTD_ARGS
+          value: -c /etc/fluentd-config/fluentd.conf
+        volumeMounts:
+        - name: off-storage
+          mountPath: /app
+        - name: config-volume
+          mountPath: /etc/fluentd-config
+      volumes:
+      - name: off-storage
+        persistentVolumeClaim:
+          claimName: esoff-app-pvc
+      - name: config-volume
+        configMap:
+          name: fluentd-sidecar-logging-config              
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sidecar-logging-app-svc
+  namespace: esoff
+  labels:
+    app: sidecar-logging-app
+spec:
+  selector:
+    app: sidecar-logging-app
+  ports:
+  - port: 8080
+    targetPort: 8078
+    name: http

@@ -1,0 +1,7 @@
+spring:
+ application:
+  name: sidecar
+server:
+  port: 8078
+  servlet:
+   context-path: /sidecar
