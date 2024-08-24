@@ -66,7 +66,7 @@ pipeline {
                     if(TYPE == 'TAG'){
                         DEPLOY_K8S = true;
                         sh "git clone -b $gitBranch $hrefr"
-                        dir('docker-test'){
+                        dir('sidecar-logging'){
                             sh "git checkout tags/$refsb -b $refsb"
                             COMMIT_ID = sh(returnStdout: true, script: 'git rev-list --tags --date-order | head -1').trim()
                         	PPR_TAG = sh(returnStdout: true, script: "git show-ref --tags | grep '${COMMIT_ID}' | tail -1 | awk -F /  \'{print  \$NF}\'").trim()
