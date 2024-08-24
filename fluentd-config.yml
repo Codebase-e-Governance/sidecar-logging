@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluentd-sidecar-logging-config
-  namespace: esoff
+  namespace: ecc
 data:
   fluentd.conf: |
     <source>

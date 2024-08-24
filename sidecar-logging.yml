@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sidecar-logging-app
-  namespace: esoff
+  namespace: ecc
   labels:
     app: sidecar-logging-app
 spec:
@@ -28,7 +28,7 @@ spec:
           - containerPort: 8078
             name: http
         volumeMounts:
-        - name: off-storage
+        - name: ecc-app-storage
           mountPath: /app  
       - name: fluentd-agent
         image: quay.io/fluentd_elasticsearch/fluentd:v3.1.0
@@ -36,14 +36,14 @@ spec:
         - name: FLUENTD_ARGS
           value: -c /etc/fluentd-config/fluentd.conf
         volumeMounts:
-        - name: off-storage
+        - name: ecc-app-storage
           mountPath: /app
         - name: config-volume
           mountPath: /etc/fluentd-config
       volumes:
-      - name: off-storage
+      - name: ecc-app-storage
         persistentVolumeClaim:
-          claimName: esoff-app-pvc
+          claimName: ecc-app-pvc
       - name: config-volume
         configMap:
           name: fluentd-sidecar-logging-config              
@@ -52,7 +52,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: sidecar-logging-app-svc
-  namespace: esoff
+  namespace: ecc
   labels:
     app: sidecar-logging-app
 spec:
