@@ -125,8 +125,8 @@ pipeline {
              script{
                 dir('sidecar-logging'){
                     if(DEPLOY_K8S){
+                    	echo "deploying K8S..."
                         sh "pwd"
-                        sh "ls -l"
 		                container('kubectl'){
 		                   sh "cat sidecar-logging.yml | sed -e 's/\${DOCKER_REPO}/'$DOCKER_REPO'/g;s/\${DOCKER_TAG}/'$DOCKER_TAG'/g' | kubectl -n ecc apply -f -"
 	                	}
