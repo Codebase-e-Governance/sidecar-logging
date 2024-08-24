@@ -51,7 +51,7 @@ pipeline {
                 //My_Git_token = credentials('nik_cred_bitb_prod_esign')
                 gitBranch = 'develop';
                 refsb = "${env.refsb != null ? env.refsb : 'develop'}";
-                hrefr = "${env.hrefr_0 != null ? env.hrefr_0 : env.BITB_REPO + '/sidecar-logging.git'}";
+                hrefr = "${env.hrefr_0 != null ? env.hrefr_0 : env.SVN_URL + '/sidecar-logging.git'}";
                 //hrefr = "${env.hrefr}";
                 eventKey = "${env.eventKey}";
                 TYPE = "${env.type}";
