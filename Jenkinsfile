@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom 'esign3'
+            inheritFrom 'ecc'
             defaultContainer 'maven17'
         }
     }
