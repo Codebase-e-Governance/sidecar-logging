@@ -12,43 +12,8 @@ pipeline {
         BUILD_SCOPE = 'UAT'; 
     }
     stages {
-    	stage('Hello') {
-          steps {
-		        echo 'Hello World'
-		        echo 'Building...'
-		        
-		        echo 'Env vars for cloud pull request...'
-		        echo "BITBUCKET_SOURCE_BRANCH ${env.BITBUCKET_SOURCE_BRANCH}"
-		        echo "BITBUCKET_TARGET_BRANCH ${env.BITBUCKET_TARGET_BRANCH}"
-		        echo "BITBUCKET_PULL_REQUEST_LINK ${env.BITBUCKET_PULL_REQUEST_LINK}"
-		        echo "BITBUCKET_PULL_REQUEST_ID ${env.BITBUCKET_PULL_REQUEST_ID}"
-		        echo "BITBUCKET_PAYLOAD ${env.BITBUCKET_PAYLOAD}"
-		
-		        echo 'Env vars for cloud push...'
-		        echo "REPOSITORY_LINK ${env.REPOSITORY_LINK}"
-		        echo "BITBUCKET_SOURCE_BRANCH ${env.BITBUCKET_SOURCE_BRANCH}"
-		        echo "BITBUCKET_REPOSITORY_URL ${env.BITBUCKET_REPOSITORY_URL}"
-		        echo "BITBUCKET_PUSH_REPOSITORY_UUID ${env.BITBUCKET_PUSH_REPOSITORY_UUID}"
-		        echo "BITBUCKET_PAYLOAD ${env.BITBUCKET_PAYLOAD}"
-		
-		        echo 'Env vars for server push...'
-		        echo "REPOSITORY_LINK ${env.REPOSITORY_LINK}"
-		        echo "BITBUCKET_SOURCE_BRANCH ${env.BITBUCKET_SOURCE_BRANCH}"
-		        echo "BITBUCKET_REPOSITORY_URL ${env.BITBUCKET_REPOSITORY_URL}"
-		        echo "BITBUCKET_PUSH_REPOSITORY_UUID ${env.BITBUCKET_PUSH_REPOSITORY_UUID}"
-		        echo "BITBUCKET_PAYLOAD ${env.BITBUCKET_PAYLOAD}"
-            }
-        }
-        stage('Cleanup'){
-            steps{
-            	echo "cleanup false"
-                // Clean before build
-                //cleanWs()
-            }
-        }
         stage('checkout') {
              environment { 
-                //My_Git_token = credentials('nik_cred_bitb_prod_esign')
                 gitBranch = 'develop';
                 refsb = "${env.refsb != null ? env.refsb : 'develop'}";
                 hrefr = "${env.hrefr_0 != null ? env.hrefr_0 : env.SVN_URL + '/sidecar-logging.git'}";
@@ -59,9 +24,7 @@ pipeline {
             }
             steps {
                 script{
-                
                 withCredentials([gitUsernamePassword(credentialsId: 'ecc-git-pat-cred', gitToolName: 'git-tool')]) {
-                   
                     echo 'checkout sidecar-logging'
                     if(TYPE == 'TAG'){
                         DEPLOY_K8S = true;
@@ -141,13 +104,6 @@ pipeline {
     post {
         success {
             echo 'This will run only if successful'
-            echo "URL: ${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_ID}/console"
-            //mail bcc: '', body: "job ${env.JOB_NAME} sucess. PR-Branch: ${env.refsb} click here for job details: ${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_ID}/console", cc: 'kablum@proteantech.in', from: 'no-reply@devops.proteantech.in', replyTo: '', subject: "PR:${env.refsb} ${env.JOB_NAME}-Success", to: 'nikhilw@proteantech.in'
-            //currentBuild.result = currentBuild.result ?: 'SUCCESS'
-            emailext body: '${JELLY_SCRIPT, template="jenkins-matrix-email-html.template"}', 
-            subject: "${env.JOB_NAME} - Build # ${env.BUILD_ID} - ${currentBuild.currentResult}!", 
-            to: 'nikhilw@proteantech.in;kablum@proteantech.in'
-            //bitbucketStatusNotify(buildState:'SUCCESSFUL', commitId: "${COMMIT_ID}")
         }
         
     }
