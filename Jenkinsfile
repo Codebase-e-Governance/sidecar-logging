@@ -71,7 +71,6 @@ pipeline {
                             COMMIT_ID = sh(returnStdout: true, script: 'git rev-list --tags --date-order | head -1').trim()
                         	PPR_TAG = sh(returnStdout: true, script: "git show-ref --tags | grep '${COMMIT_ID}' | tail -1 | awk -F /  \'{print  \$NF}\'").trim()
                         }
-                        
                     }else{
                     	sh "pwd"
                     	sh "ls -l"
