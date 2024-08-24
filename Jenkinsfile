@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script{
                 
-                withCredentials([gitUsernamePassword(credentialsId: 'nik_cred_bitb_prod_esign', gitToolName: 'git-tool')]) {
+                withCredentials([gitUsernamePassword(credentialsId: 'ecc-git-pat-cred', gitToolName: 'git-tool')]) {
                    
                     echo 'checkout sidecar-logging'
                     if(TYPE == 'TAG'){
@@ -75,7 +75,7 @@ pipeline {
                     	sh "pwd"
                     	sh "ls -l"
                         sh "mvn -v"
-                        sh "git clone -b SC-100 $hrefr"
+                        sh "git clone -b SL-100 $hrefr"
                         DEPLOY_K8S = true;
                         PPR_TAG = "${refsb}-beta"
                         COMMIT_ID = "${toHash}"
