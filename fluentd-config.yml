@@ -6,12 +6,22 @@ metadata:
 data:
   fluentd.conf: |
     <source>
-      type tail
+      @type tail
       format none
       path /app/ecc/sidecar-logging/logs/sidecar-*.log
+      exclude_path ["/app/ecc/sidecar-logging/logs/*.gz", "/app/ecc/sidecar-logging/logs/*.zip"]
       pos_file /app/ecc/sidecar-logging/logs/sidecar.log.pos
+      read_from_head true
+      follow_inodes true  # Without this parameter, file rotation causes log duplication.
       tag sidecar.format1
     </source>
+    
+    <filter sidecar.format1>
+    @type record_transformer
+    <record>
+    hostname "#{ENV['HOSTNAME']}"
+    </record>
+    </filter>
 
     <match **>
       @id elasticsearch-sidecar-logging
@@ -22,5 +32,5 @@ data:
       host elasticsearch-logging.kube-system.svc.cluster.local
       port 9200
       logstash_format true
-      logstash_prefix esoff
+      logstash_prefix ecc
     </match>    
