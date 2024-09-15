@@ -13,9 +13,8 @@ import com.sidecar.logging.dto.AspRes;
 @RestController
 @RequestMapping("/test")
 public class TestController {
-
-	private static Logger log = LogManager.getLogger(TestController.class);
 	
+	private static Logger log = LogManager.getLogger(TestController.class);
 	
 	private void init() {
 		int cnt = 0;
