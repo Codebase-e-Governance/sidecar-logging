@@ -2,12 +2,12 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: sidecar-logging-app-ingressroute
-  namespace: esoff
+  namespace: ecc
 spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`172.30.151.179`) && PathPrefix(`/sidecar`)
+  - match: Host(`www.allspark.co.in`) && PathPrefix(`/sidecar`)
     kind: Rule
     services:
     - name: sidecar-logging-app-svc
